@@ -1,0 +1,22 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<resources>
+  <string name="app_name">Geo Tracker</string>
+  <string name="settings_id_title">Device identifier</string>
+  <string name="settings_address_title">Server address</string>
+  <string name="settings_address_summary">Domain name or IP address</string>
+  <string name="settings_port_title">Server port</string>
+  <string name="settings_port_summary">Tracking server TCP port</string>
+  <string name="settings_interval_title">Frequency</string>
+  <string name="settings_interval_summary">Messages interval in seconds</string>
+  <string name="settings_status_title">Service status</string>
+  <string name="settings_status_off">Start</string>
+  <string name="settings_status_on">Stop</string>
+  <string name="settings_status_off_summary">Service stopped</string>
+  <string name="settings_status_on_summary">Service running</string>
+  <string name="settings_secure_title">Encryption</string>
+  <string name="settings_secure_off">Enable</string>
+  <string name="settings_secure_on">Disable</string>
+  <string name="settings_secure_off_summary">Encryption disabled</string>
+  <string name="settings_secure_on_summary">Encryption enabled</string>
+  <string name="settings_provider_title">Location provider</string>
+</resources>
