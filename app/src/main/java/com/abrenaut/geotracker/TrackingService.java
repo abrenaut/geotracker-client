@@ -107,12 +107,12 @@ public class TrackingService extends Service implements LocationListener {
         client.post(this, url, new StringEntity(position.toJSONString()), "application/json", new JsonHttpResponseHandler() {
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                StatusActivity.addMessage("Send failure" + responseString);
+                StatusActivity.addMessage("Send failure: " + responseString);
             }
 
             @Override
             public void onSuccess(int statusCode, Header[] headers, String responseString) {
-
+                StatusActivity.addMessage("Send success: " + responseString);
             }
         });
     }
