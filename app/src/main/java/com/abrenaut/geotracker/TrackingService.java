@@ -30,6 +30,17 @@ import android.provider.Settings;
 import android.util.Log;
 
 import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.BlackholeHttpResponseHandler;
+import com.loopj.android.http.JsonHttpResponseHandler;
+import com.loopj.android.http.TextHttpResponseHandler;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.UnsupportedEncodingException;
+
+import cz.msebera.android.httpclient.Header;
+import cz.msebera.android.httpclient.entity.StringEntity;
 
 public class TrackingService extends Service implements LocationListener {
 
@@ -61,7 +72,9 @@ public class TrackingService extends Service implements LocationListener {
         Uri.Builder builder = new Uri.Builder();
         builder.scheme(secure ? "https" : "http")
                 .encodedAuthority(address + ':' + port)
-                .appendPath("");
+                .appendPath("api")
+                .appendPath("1.0")
+                .appendPath("positions");
         url = builder.build().toString();
 
         // We use the Android ID to identify uniquely the device
@@ -87,13 +100,27 @@ public class TrackingService extends Service implements LocationListener {
         } else {
             Log.i(TAG, "location new");
             lastUpdateTime = location.getTime();
-            send(new Position(deviceId, location));
+            try {
+                send(new Position(deviceId, location));
+            } catch (Exception e) {
+                Log.w(TAG, "cloud not send " + e.getMessage());
+            }
         }
     }
 
-    private void send(final Position position) {
+    private void send(final Position position) throws JSONException, UnsupportedEncodingException {
         Log.d(TAG, position.toString());
-        client.post(url, position.toRequestParams(), null);
+        client.post(this, url, new StringEntity(position.toJSONString()), "application/json", new TextHttpResponseHandler() {
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                Log.i(TAG, "send failure" + responseString);
+            }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, String responseString) {
+                Log.i(TAG, "send success" + responseString);
+            }
+        });
     }
 
     @Override

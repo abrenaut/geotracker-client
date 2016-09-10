@@ -19,6 +19,9 @@ import android.location.Location;
 
 import com.loopj.android.http.RequestParams;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.Date;
 
 public class Position {
@@ -47,9 +50,10 @@ public class Position {
         this.course = location.getBearing();
     }
 
-    public RequestParams toRequestParams() {
-        RequestParams params = new RequestParams();
+    public String toJSONString() throws JSONException {
+        JSONObject params = new JSONObject();
 
+        params.put("uid", this.deviceId);
         params.put("time", this.time);
         params.put("lat", this.latitude);
         params.put("lng", this.longitude);
@@ -57,7 +61,7 @@ public class Position {
         params.put("spd", this.speed);
         params.put("crs", this.course);
 
-        return params;
+        return params.toString();
     }
 
     @Override
