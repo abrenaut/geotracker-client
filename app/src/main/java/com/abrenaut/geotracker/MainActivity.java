@@ -23,6 +23,8 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.view.Menu;
+import android.view.MenuItem;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -137,6 +139,21 @@ public class MainActivity extends Activity
         super.onPause();
         settingsFragment.getPreferenceScreen().getSharedPreferences()
                 .unregisterOnSharedPreferenceChangeListener(this);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.status) {
+            startActivity(new Intent(this, StatusActivity.class));
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
 }

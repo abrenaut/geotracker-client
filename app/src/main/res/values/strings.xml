@@ -1,6 +1,7 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources>
   <string name="app_name">Geo Tracker</string>
+  <string name="menu_status">Status</string>
   <string name="settings_id_title">Device identifier</string>
   <string name="settings_address_title">Server address</string>
   <string name="settings_address_summary">Domain name or IP address</string>

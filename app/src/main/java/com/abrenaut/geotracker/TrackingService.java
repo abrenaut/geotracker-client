@@ -44,8 +44,6 @@ import cz.msebera.android.httpclient.entity.StringEntity;
 
 public class TrackingService extends Service implements LocationListener {
 
-    private static final String TAG = TrackingService.class.getSimpleName();
-
     private String url;
 
     private String deviceId;
@@ -60,7 +58,7 @@ public class TrackingService extends Service implements LocationListener {
 
     @Override
     public void onCreate() {
-        Log.i(TAG, "service create");
+        StatusActivity.addMessage("Tracking on");
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
 
@@ -87,38 +85,34 @@ public class TrackingService extends Service implements LocationListener {
 
     @Override
     public void onDestroy() {
-        Log.i(TAG, "service destroy");
+        StatusActivity.addMessage("Tracking off");
         locationManager.removeUpdates(this);
     }
 
     @Override
     public void onLocationChanged(Location location) {
-        if (location == null) {
-            Log.i(TAG, "location nil");
-        } else if (location.getTime() - lastUpdateTime <= period) {
-            Log.i(TAG, "location old");
-        } else {
-            Log.i(TAG, "location new");
+        if (location != null && location.getTime() - lastUpdateTime > period) {
+            StatusActivity.addMessage("New location");
             lastUpdateTime = location.getTime();
             try {
                 send(new Position(deviceId, location));
             } catch (Exception e) {
-                Log.w(TAG, "cloud not send " + e.getMessage());
+                StatusActivity.addMessage("Could not send new location " + e.getMessage());
             }
         }
     }
 
     private void send(final Position position) throws JSONException, UnsupportedEncodingException {
-        Log.d(TAG, position.toString());
-        client.post(this, url, new StringEntity(position.toJSONString()), "application/json", new TextHttpResponseHandler() {
+        StatusActivity.addMessage(position.toString());
+        client.post(this, url, new StringEntity(position.toJSONString()), "application/json", new JsonHttpResponseHandler() {
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                Log.i(TAG, "send failure" + responseString);
+                StatusActivity.addMessage("Send failure" + responseString);
             }
 
             @Override
             public void onSuccess(int statusCode, Header[] headers, String responseString) {
-                Log.i(TAG, "send success" + responseString);
+
             }
         });
     }

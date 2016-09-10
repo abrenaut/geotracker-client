@@ -66,10 +66,7 @@ public class Position {
 
     @Override
     public String toString() {
-        return " (" +
-                " time:" + this.time.getTime() / 1000 +
-                " lat:" + this.latitude +
-                " lon:" + this.longitude +
-                ")";
+        return " lat:" + this.latitude +
+                ", lon:" + this.longitude;
     }
 }
