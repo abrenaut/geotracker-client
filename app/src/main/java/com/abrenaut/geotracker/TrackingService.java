@@ -92,7 +92,6 @@ public class TrackingService extends Service implements LocationListener {
     @Override
     public void onLocationChanged(Location location) {
         if (location != null && location.getTime() - lastUpdateTime > period) {
-            StatusActivity.addMessage("New location");
             lastUpdateTime = location.getTime();
             try {
                 send(new Position(deviceId, location));
@@ -104,7 +103,7 @@ public class TrackingService extends Service implements LocationListener {
 
     private void send(final Position position) throws JSONException, UnsupportedEncodingException {
         StatusActivity.addMessage(position.toString());
-        client.post(this, url, new StringEntity(position.toJSONString()), "application/json", new JsonHttpResponseHandler() {
+        client.post(this, url, new StringEntity(position.toJSONString()), "application/json", new TextHttpResponseHandler() {
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
                 StatusActivity.addMessage("Send failure: " + responseString);
@@ -112,7 +111,7 @@ public class TrackingService extends Service implements LocationListener {
 
             @Override
             public void onSuccess(int statusCode, Header[] headers, String responseString) {
-                StatusActivity.addMessage("Send success: " + responseString);
+                StatusActivity.addMessage("Send success");
             }
         });
     }
