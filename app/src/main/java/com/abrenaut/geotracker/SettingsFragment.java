@@ -12,7 +12,6 @@ import android.util.Patterns;
 public class SettingsFragment extends PreferenceFragment {
 
     public static final String KEY_ADDRESS = "address";
-    public static final String KEY_PORT = "port";
     public static final String KEY_SECURE = "secure";
     public static final String KEY_INTERVAL = "interval";
     public static final String KEY_STATUS = "status";
@@ -31,18 +30,6 @@ public class SettingsFragment extends PreferenceFragment {
                 return newValue != null && !((String) newValue).isEmpty();
             }
         });
-        findPreference(KEY_PORT).setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-            @Override
-            public boolean onPreferenceChange(Preference preference, Object newValue) {
-                // Check that the port is valid
-                boolean isValidPort = false;
-                if (newValue != null && ((String) newValue).matches("\\d+")) {
-                    int value = Integer.parseInt((String) newValue);
-                    isValidPort = value > 0 && value <= 65536;
-                }
-                return isValidPort;
-            }
-        });
         findPreference(KEY_INTERVAL).setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
             @Override
             public boolean onPreferenceChange(Preference preference, Object newValue) {
@@ -54,7 +41,6 @@ public class SettingsFragment extends PreferenceFragment {
 
     public void setPreferencesEnabled(boolean enabled) {
         findPreference(KEY_ADDRESS).setEnabled(enabled);
-        findPreference(KEY_PORT).setEnabled(enabled);
         findPreference(KEY_SECURE).setEnabled(enabled);
         findPreference(KEY_INTERVAL).setEnabled(enabled);
     }

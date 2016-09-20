@@ -63,13 +63,12 @@ public class TrackingService extends Service implements LocationListener {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
 
         String address = preferences.getString(SettingsFragment.KEY_ADDRESS, null);
-        int port = Integer.parseInt(preferences.getString(SettingsFragment.KEY_PORT, null));
         boolean secure = preferences.getBoolean(SettingsFragment.KEY_SECURE, false);
 
         // Build the API URL
         Uri.Builder builder = new Uri.Builder();
         builder.scheme(secure ? "https" : "http")
-                .encodedAuthority(address + ':' + port)
+                .encodedAuthority(address)
                 .appendPath("api")
                 .appendPath("1.0")
                 .appendPath("positions");

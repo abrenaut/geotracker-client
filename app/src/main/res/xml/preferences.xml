@@ -11,15 +11,9 @@
     <EditTextPreference
         android:defaultValue="10.0.2.2"
         android:key="address"
+        android:inputType="textUri"
         android:summary="@string/settings_address_summary"
         android:title="@string/settings_address_title" />
-
-    <EditTextPreference
-        android:defaultValue="5000"
-        android:key="port"
-        android:numeric="integer"
-        android:summary="@string/settings_port_summary"
-        android:title="@string/settings_port_title" />
 
     <CheckBoxPreference
         android:defaultValue="false"
