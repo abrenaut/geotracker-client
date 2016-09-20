@@ -28,11 +28,7 @@ public class SettingsFragment extends PreferenceFragment {
             @Override
             public boolean onPreferenceChange(Preference preference, Object newValue) {
                 // Check the server address validity
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.FROYO) {
-                    return newValue != null && Patterns.DOMAIN_NAME.matcher((String) newValue).matches();
-                } else {
-                    return newValue != null && !((String) newValue).isEmpty();
-                }
+                return newValue != null && !((String) newValue).isEmpty();
             }
         });
         findPreference(KEY_PORT).setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
