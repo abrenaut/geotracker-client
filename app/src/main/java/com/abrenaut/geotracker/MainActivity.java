@@ -17,143 +17,63 @@ package com.abrenaut.geotracker;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
+import android.support.annotation.IdRes;
+import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.ArrayAdapter;
+
+import com.roughike.bottombar.BottomBar;
+import com.roughike.bottombar.OnTabSelectListener;
 
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.Set;
 
-public class MainActivity extends Activity
-        implements SharedPreferences.OnSharedPreferenceChangeListener {
-
-    private static final int PERMISSIONS_REQUEST_LOCATION = 2;
-
-    private SharedPreferences sharedPreferences;
-    private SettingsFragment settingsFragment;
+public class MainActivity extends Activity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
 
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        BottomBar bottomBar = (BottomBar) findViewById(R.id.bottom_bar);
+        bottomBar.setOnTabSelectListener(new OnTabSelectListener() {
+            @Override
+            public void onTabSelected(@IdRes int tabId) {
+                FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+                switch (tabId) {
+                    case R.id.tab_map:
+                        MapFragment mapFragment = new MapFragment();
+                        fragmentTransaction.replace(R.id.fragment_container, mapFragment);
+                        fragmentTransaction.commit();
+                        break;
+                    case R.id.tab_status:
+                        StatusFragment statusFragment = new StatusFragment();
+                        fragmentTransaction.replace(R.id.fragment_container, statusFragment);
+                        fragmentTransaction.commit();
+                        break;
+                    case R.id.tab_settings:
+                        SettingsFragment settingsFragment = new SettingsFragment();
+                        fragmentTransaction.replace(R.id.fragment_container, settingsFragment);
+                        fragmentTransaction.commit();
+                        break;
+                }
 
-        // Display the settings fragment as the main content.
-        settingsFragment = new SettingsFragment();
-        getFragmentManager().beginTransaction()
-                .replace(android.R.id.content, settingsFragment)
-                .commit();
-
-        // Set default values for preferences
-        PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
-    }
-
-    @Override
-    protected void onPostCreate(Bundle savedInstanceState) {
-        super.onPostCreate(savedInstanceState);
-
-        // If tracking is enabled, start it
-        if (sharedPreferences.getBoolean(SettingsFragment.KEY_STATUS, false)) {
-            startTrackingService();
-        }
-    }
-
-    private void startTrackingService() {
-        boolean permission = checkPermissions();
-
-        if (permission) {
-            settingsFragment.setPreferencesEnabled(false);
-            startService(new Intent(this, TrackingService.class));
-        }
-    }
-
-    private boolean checkPermissions() {
-        boolean permission = true;
-
-        // Beginning in Android 6.0 (API level 23), users grant permissions to apps while the app is running, not when they install the app
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            Set<String> missingPermissions = new HashSet<>();
-
-            if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                missingPermissions.add(Manifest.permission.ACCESS_FINE_LOCATION);
             }
-            if (checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                missingPermissions.add(Manifest.permission.ACCESS_COARSE_LOCATION);
-            }
+        });
 
-            if (!missingPermissions.isEmpty()) {
-                requestPermissions(missingPermissions.toArray(new String[missingPermissions.size()]), PERMISSIONS_REQUEST_LOCATION);
-                permission = false;
-            }
-        }
-
-        return permission;
-    }
-
-    private void stopTrackingService() {
-        stopService(new Intent(this, TrackingService.class));
-        settingsFragment.setPreferencesEnabled(true);
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        if (requestCode == PERMISSIONS_REQUEST_LOCATION) {
-            boolean permissionGranted = grantResults[0] == PackageManager.PERMISSION_GRANTED &&
-                    (permissions.length < 2 || grantResults[1] == PackageManager.PERMISSION_GRANTED);
-
-            // If user granted permissions to access location, start the tracking service
-            if (permissionGranted) {
-                startTrackingService();
-            }
-        }
-    }
-
-    @Override
-    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        if (key.equals(SettingsFragment.KEY_STATUS)) {
-            // Toggle tracking service when user enables / disables the tracking
-            if (sharedPreferences.getBoolean(SettingsFragment.KEY_STATUS, false)) {
-                startTrackingService();
-            } else {
-                stopTrackingService();
-            }
-        }
-    }
-
-    // For proper lifecycle management in the activity, it is recommended to register and unregister your SharedPreferences.OnSharedPreferenceChangeListener
-    // during the onResume() and onPause() callbacks, respectively
-    @Override
-    protected void onResume() {
-        super.onResume();
-        settingsFragment.getPreferenceScreen().getSharedPreferences()
-                .registerOnSharedPreferenceChangeListener(this);
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        settingsFragment.getPreferenceScreen().getSharedPreferences()
-                .unregisterOnSharedPreferenceChangeListener(this);
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main, menu);
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.status) {
-            startActivity(new Intent(this, StatusActivity.class));
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
     }
 
 }

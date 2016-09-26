@@ -9,21 +9,14 @@
         android:title="@string/settings_status_title" />
 
     <EditTextPreference
-        android:defaultValue="10.0.2.2"
+        android:defaultValue="https://abrenaut.com/geotracker"
         android:key="address"
         android:inputType="textUri"
         android:summary="@string/settings_address_summary"
         android:title="@string/settings_address_title" />
 
-    <CheckBoxPreference
-        android:defaultValue="false"
-        android:key="secure"
-        android:summaryOff="@string/settings_secure_off_summary"
-        android:summaryOn="@string/settings_secure_on_summary"
-        android:title="@string/settings_secure_title" />
-
     <EditTextPreference
-        android:defaultValue="300"
+        android:defaultValue="1"
         android:key="interval"
         android:numeric="integer"
         android:summary="@string/settings_interval_summary"

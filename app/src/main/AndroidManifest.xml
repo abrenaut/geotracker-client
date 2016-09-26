@@ -17,8 +17,6 @@
             android:name=".MainActivity"
             android:launchMode="singleTask" />
 
-        <activity android:name=".StatusActivity" />
-
         <activity-alias
             android:name=".Launcher"
             android:targetActivity=".MainActivity">

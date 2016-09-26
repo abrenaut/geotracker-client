@@ -58,21 +58,18 @@ public class TrackingService extends Service implements LocationListener {
 
     @Override
     public void onCreate() {
-        StatusActivity.addMessage("Tracking on");
+        StatusFragment.addMessage("Tracking on");
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
 
         String address = preferences.getString(SettingsFragment.KEY_ADDRESS, null);
-        boolean secure = preferences.getBoolean(SettingsFragment.KEY_SECURE, false);
 
         // Build the API URL
-        Uri.Builder builder = new Uri.Builder();
-        builder.scheme(secure ? "https" : "http")
-                .encodedAuthority(address)
+        url = Uri.parse(address)
+                .buildUpon()
                 .appendPath("api")
                 .appendPath("1.0")
-                .appendPath("positions");
-        url = builder.build().toString();
+                .appendPath("positions").build().toString();
 
         // We use the Android ID to identify uniquely the device
         deviceId = Settings.Secure.ANDROID_ID;
@@ -84,7 +81,7 @@ public class TrackingService extends Service implements LocationListener {
 
     @Override
     public void onDestroy() {
-        StatusActivity.addMessage("Tracking off");
+        StatusFragment.addMessage("Tracking off");
         locationManager.removeUpdates(this);
     }
 
@@ -95,23 +92,23 @@ public class TrackingService extends Service implements LocationListener {
             try {
                 send(new Position(deviceId, location));
             } catch (Exception e) {
-                StatusActivity.addMessage("Could not send new location " + e.getMessage());
+                StatusFragment.addMessage("Could not send new location " + e.getMessage());
             }
         }
     }
 
     private void send(final Position position) throws JSONException, UnsupportedEncodingException {
-        StatusActivity.addMessage(position.toString());
+        StatusFragment.addMessage(position.toString());
         client.post(this, url, new StringEntity(position.toJSONString()), "application/json", new TextHttpResponseHandler() {
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
                 String errorMessage = responseString != null ? responseString : throwable.getLocalizedMessage();
-                StatusActivity.addMessage("Send failure: " + errorMessage);
+                StatusFragment.addMessage("Send failure: " + errorMessage);
             }
 
             @Override
             public void onSuccess(int statusCode, Header[] headers, String responseString) {
-                StatusActivity.addMessage("Send success");
+                StatusFragment.addMessage("Send success");
             }
         });
     }

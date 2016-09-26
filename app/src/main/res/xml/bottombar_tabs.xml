@@ -1,0 +1,14 @@
+<tabs>
+    <tab
+        id="@+id/tab_settings"
+        icon="@drawable/ic_action_settings"
+        title="@string/menu_settings" />
+    <tab
+        id="@+id/tab_status"
+        icon="@drawable/ic_action_reorder"
+        title="@string/menu_status" />
+    <tab
+        id="@+id/tab_map"
+        icon="@drawable/ic_communication_location_on"
+        title="@string/menu_map" />
+</tabs>
