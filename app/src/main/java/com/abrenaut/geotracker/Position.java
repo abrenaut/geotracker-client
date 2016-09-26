@@ -28,7 +28,7 @@ public class Position {
 
     private String deviceId;
 
-    private Date time;
+    private long time;
 
     private double latitude;
 
@@ -42,7 +42,7 @@ public class Position {
 
     public Position(String deviceId, Location location) {
         this.deviceId = deviceId;
-        this.time = new Date(location.getTime());
+        this.time = location.getTime();
         this.latitude = location.getLatitude();
         this.longitude = location.getLongitude();
         this.altitude = location.getAltitude();
